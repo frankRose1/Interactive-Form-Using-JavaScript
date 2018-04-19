@@ -30,6 +30,8 @@ jobRole.addEventListener('change', (e) => {
   //if user selects 'other' from the dropdown, append the textfield to the end of the fieldset
     if (e.target.value === "other") {
       fieldSet1.appendChild(otherLabel);
+    } else if (e.target.value !== "other") {
+      fieldSet1.removeChild(otherLabel);
     }
 });
 
@@ -79,34 +81,84 @@ shirtDesign.addEventListener('change', (e) => {
 
 
 //                                                         ACTIVITIES SECTION
-// STEP 4 ->
- // ”Register for Activities” section of the form:
- // Some events are at the same time as others. If the user selects a workshop, don't allow selection of a workshop at the same date and time -- you should
- //  disable the checkbox and visually indicate that the workshop in the competing time slot isn't available.
- // When a user unchecks an activity, make sure that competing activities (if there are any) are no longer disabled.
- // As a user selects activities, a running total should display below the list of checkboxes. For example, if the user selects
- // "Main Conference", then Total: $200 should appear. If they add 1 workshop, the total should change to Total: $300.
+
 const activitiesFieldSet = document.querySelector('.activities');
 const activitiesCheckbox = document.querySelectorAll('.activities input[type="checkbox"]');
+  //individual checkbox activities
+const jsFrameworks = activitiesCheckbox[1];
+const jsLibs = activitiesCheckbox[2];
+const express = activitiesCheckbox[3];
+const node = activitiesCheckbox[4];
+const buildTools = activitiesCheckbox[5];
+const npm = activitiesCheckbox[6];
 const activitiesLabel = document.querySelector('.activities label');
 const totalCostDiv = document.createElement('div');
 let totalCost = 0;
 
 activitiesFieldSet.addEventListener('change', (e) => {
+  // use .substr to target the cost at the end of each string inside the otherLabel
+  //accumulate the cost in a variable as the user clicks on various avtivites
+  //then add the total to the totalCostDiv that has been created
  if (e.target.tagName === 'INPUT') {
-   // Get the cost of this activity
    const accumulatedCost = parseInt(e.target.parentNode.textContent.substr(-3));
-
    if (e.target.checked) {
-     // If the checkbox is checked, add the dollar amount to a running total
      totalCost += accumulatedCost;
    } else {
-     // If the checkbox is UNchecked, subtract the dollar amount
      totalCost -= accumulatedCost;
    }
-
-   // Update grandTotal with the dollar amount
    totalCostDiv.textContent = `Your total cost is: $${totalCost}`;
    activitiesFieldSet.appendChild(totalCostDiv);
  }
+
+  //specific checkboxes must be disabled if their scheduled time conflicts
+  // with another activity
+  if (jsFrameworks.checked) {
+    express.disabled = true;
+  } else {
+    express.disabled = false;
+  }
+  if (express.checked) {
+    jsFrameworks.disabled = true;
+  } else {
+    jsFrameworks.disabled = false;
+  }
+  if (jsLibs.checked) {
+    node.disabled = true;
+  } else {
+    node.disabled = false;
+  }
+  if (node.checked) {
+    jsLibs.disabled = true;
+  } else {
+    jsLibs.disabled = false;
+  }
+});
+
+//                                    PAYMENT INFO section
+// Display payment sections based on the payment option chosen in the select menu
+const paymentOptions = document.getElementById('payment');
+const creditCardInfo = document.getElementById('credit-card');
+const creditCardOption = document.querySelector('#payment option[value="credit card"]');
+const paypalInfo = document.querySelectorAll('div p')[0];
+const bitCoinInfo = document.querySelectorAll('div p')[1];
+creditCardOption.selected = 'selected';//set credit card as the default payment option
+
+//hide the paypal and bitcoin sections by default
+paypalInfo.style.display = 'none';
+bitCoinInfo.style.display = 'none';
+// show/hide payment section based on what user selects from the payment options dropdown menu
+paymentOptions.addEventListener('change', (e) => {
+  if (e.target.value === 'paypal' ) {
+    paypalInfo.style.display = 'block';
+    creditCardInfo.style.display = 'none';
+    bitCoinInfo.style.display = 'none';
+  } else if (e.target.value === 'bitcoin') {
+    bitCoinInfo.style.display = 'block';
+    creditCardInfo.style.display = 'none';
+    paypalInfo.style.display = 'none';
+  } else if ((e.target.value === 'credit card')) {
+    creditCardInfo.style.display = 'block';
+    bitCoinInfo.style.display = 'none';
+    paypalInfo.style.display = 'none';
+  }
 });
