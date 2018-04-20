@@ -7,7 +7,6 @@ const jobOptions = jobRole.children;
 const shirtDesign = document.getElementById('design');
 const shirtColor = document.getElementById('color');
 
-//                                                         FOCUS SECTION
 
 // When the page loads, give focus to the first text field
 window.addEventListener('load', () => {
@@ -140,8 +139,8 @@ const creditCardInfo = document.getElementById('credit-card');
 const creditCardOption = document.querySelector('#payment option[value="credit card"]');
 const paypalInfo = document.querySelectorAll('div p')[0];
 const bitCoinInfo = document.querySelectorAll('div p')[1];
-creditCardOption.selected = 'selected';//set credit card as the default payment option
 
+creditCardOption.selected = 'selected';//set credit card as the default payment option
 //hide the paypal and bitcoin sections by default
 paypalInfo.style.display = 'none';
 bitCoinInfo.style.display = 'none';
@@ -183,11 +182,13 @@ form.addEventListener('submit', (e) => {
   const nameLabel = document.querySelector('label[for="name"]');
   let usersName = nameInput.value;
   if (usersName === '') {
-    nameInput.className = 'invalid';
-    nameLabel.textContent = "Please enter your full name";
     nameInput.focus();
+    nameInput.classList.add('invalid');
+    nameLabel.classList.add('invalid-text');
+    nameLabel.textContent = "Please enter your full name";
   } else {
-    nameInput.className = '';
+    nameInput.classList.remove('invalid');
+    nameLabel.classList.remove('invalid-text');
     nameLabel.textContent = "Name:";
   }
 
@@ -200,11 +201,13 @@ form.addEventListener('submit', (e) => {
   //checks to see if the @ symbol is not the first character of the Email
   //and the dot is atleast one character after the @ sign
   if (atPosition < 1 || (dotPosition - atPosition < 2 || userEmail.value === '') ) {
-    emailInput.className = 'invalid';
-    emailLabel.textContent = "Please enter a valid email (e.g. johndoe@gmail.com)";
     emailLabel.focus();
+    emailInput.classList.add('invalid');
+    emailLabel.classList.add('invalid-text');
+    emailLabel.textContent = "Please enter a valid email (e.g. johndoe@gmail.com)";
   } else {
-      emailInput.className = '';
+      emailInput.classList.remove('invalid');
+      emailLabel.classList.remove('invalid-text');
       emailLabel.textContent = "Email:";
   }
   //register for activites section
@@ -215,47 +218,49 @@ form.addEventListener('submit', (e) => {
   //   }
   // }
 
-  //if credit card was selected
+  // If the selected payment option is "Credit Card," make sure the user has supplied a credit card number,
   const submitButton = document.querySelector('button[type="submit"]');
   const ccNumber = document.getElementById('cc-num');
   const ccNumLabel = document.querySelector('label[for="cc-num"]');
   const zipCode = document.getElementById('zip');
+  const zipcodeLabel = document.querySelector('label[for="zip"]');
   const cvvNumber = document.getElementById('cvv');
-// Credit card field should only accept a number between 13 and 16 digits
-// The zipcode field should accept a 5-digit number
-// The CVV should only accept a number that is exactly 3 digits long
-  if (creditCardOption.selected) {
-    // If the selected payment option is "Credit Card," make sure the user has supplied a credit card number,
-    // a zip code, and a 3 number CVV value before the form can be submitted.
+  const cvvLabel = document.querySelector('label[for="cvv"]');
 
-    //id the cc field empty
-    if(ccNumber.value === '') {
+  if (creditCardOption.selected) {
+
+    //check to make sure credit card field isn't blank, is proper length, and is only numbers
+    if(ccNumber.value === '' || isNaN(ccNumber.value) === true || ccNumber.value.length > 16 || ccNumber.value.length < 13) {
         ccNumber.focus();
-        ccNumber.className = 'invalid';
-        ccNumLabel.innerText = 'Please Enter a valid credit card number';
-    } else {
-      ccNumber.className = '';
-      ccNumLabel.innerText = 'Card Number:';
-    }
-    //is the cc number proper length
-    if ( ccNumber.value.length > 16 || ccNumber.value.length < 13) {
-        ccNumber.focus();
-        ccNumber.className = 'invalid';
+        ccNumber.classList.add('invalid');
+        ccNumLabel.classList.add('invalid-text');
         ccNumLabel.innerText = 'Please enter a 13-16 digit card number';
     } else {
-      ccNumber.className = '';
+      ccNumber.classList.remove('invalid');
+      ccNumLabel.classList.remove('invalid-text');
       ccNumLabel.innerText = 'Card Number:';
     }
-    //is the cc number numbers only
-    if (isNaN(ccNumber.value) !== false) {
-      ccNumber.focus();
-      ccNumber.className = 'invalid';
-      ccNumLabel.innerText = 'Please enter numbers only!';
-    } else {
-      ccNumber.className = '';
-      ccNumLabel.innerText = 'Card Number:';
-    }
-    //follow similar format for cvv and zip Code
-    
+     //check to make sure zip code is not left blank, is 5 digits, and is only numbers
+     if(zipCode.value === '' || isNaN(zipCode.value) === true || zipCode.value.length !== 5) {
+         zipCode.focus();
+         zipCode.classList.add('invalid');
+         zipcodeLabel.classList.add('invalid-text');
+         zipcodeLabel.innerText = 'Enter a 5 digit zip code';
+     } else {
+       zipCode.classList.remove('invalid');
+       zipcodeLabel.classList.remove('invalid-text');
+       zipcodeLabel.innerText = 'Zip Code:';
+     }
+    //check to make sure cvv is not left blank, is 3 digits, and is only numbers
+     if(cvvNumber.value === '' || isNaN(cvvNumber.value) === true || cvvNumber.value.length !== 3) {
+         cvvNumber.focus();
+         cvvNumber.classList.add('invalid');
+         cvvLabel.classList.add('invalid-text');
+         cvvLabel.innerText = 'Enter a 3 digit cvv';
+     } else {
+       cvvNumber.classList.remove('invalid');
+       cvvLabel.classList.remove('invalid-text');
+       cvvLabel.innerText = 'CVV:';
+     }
   } //end of "if credit card was selected"
 });

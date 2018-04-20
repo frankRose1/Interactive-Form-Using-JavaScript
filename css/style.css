@@ -139,8 +139,9 @@ button:hover {
 input.invalid {
   background-color: #ffdddd;
 }
-input.invalid:parent {
-  color: #ffdddd;
+.invalid-text {
+  color: red;
+  font-weight: bold;
 }
 
 /* =================================
