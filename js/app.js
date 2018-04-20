@@ -3,6 +3,8 @@ const fieldSet1 = document.querySelectorAll('fieldset')[0];
 const nameInput = document.getElementById('name');
 const jobRole = document.getElementById('title');
 const jobOptions = jobRole.children;
+const otherJobField = document.getElementById('other-title');
+otherJobField.style.display = 'none';
 //t-shirt section
 const shirtDesign = document.getElementById('design');
 const shirtColor = document.getElementById('color');
@@ -15,21 +17,13 @@ window.addEventListener('load', () => {
 
 
 //                                                         JOB ROLE SECTION
-// STEP 2 -> ”Job Role” section of the form:
+
 // A text field that will be revealed when the "Other" option is selected from the "Job Role" drop down menu.
-// Give the field an id of “other-title,” and add the placeholder text of "Your Job Role" to the field.
 jobRole.addEventListener('change', (e) => {
-  //create the text field
-  const otherLabel = document.createElement('label');
-  otherLabel.htmlFor = 'other-title';
-  const otherInput = document.createElement('input');
-  otherInput.type = 'text';
-  otherInput.id = 'other-title';
-  otherInput.placeholder = 'Your Job Role';
-  otherLabel.appendChild(otherInput);
-  //if user selects 'other' from the dropdown, append the textfield to the end of the fieldset
     if (e.target.value === "other") {
-      fieldSet1.appendChild(otherLabel);
+     otherJobField.style.display = 'block';
+    } else {
+    otherJobField.style.display = 'none';
     }
 });
 
@@ -97,7 +91,7 @@ activitiesFieldSet.addEventListener('change', (e) => {
   // use .substr to target the cost at the end of each string inside the otherLabel
   //accumulate the cost in a variable as the user clicks on various avtivites
   //then add the total to the totalCostDiv that has been created
- if (e.target.tagName === 'INPUT') {
+ if (e.target.type === 'checkbox') {
    const accumulatedCost = parseInt(e.target.parentNode.textContent.substr(-3));
    if (e.target.checked) {
      totalCost += accumulatedCost;
@@ -130,6 +124,15 @@ activitiesFieldSet.addEventListener('change', (e) => {
   } else {
     jsLibs.disabled = false;
   }
+ //if a checkbox is disabled target the parent node and alter the text color to reflect event conflict
+  for(let i = 0; i < activitiesCheckbox.length; i++) {
+    if(activitiesCheckbox[i].disabled === true) {
+      activitiesCheckbox[i].parentNode.style.color = "#C0C0C0";
+    } else if (activitiesCheckbox[i].disabled === false) {
+      activitiesCheckbox[i].parentNode.style.color = "#000";
+    }
+  }
+
 });
 
 //                                    PAYMENT INFO section
@@ -210,13 +213,25 @@ form.addEventListener('submit', (e) => {
       emailLabel.classList.remove('invalid-text');
       emailLabel.textContent = "Email:";
   }
-  //register for activites section
-  //atleast one checkbox must be selected
-  // for (let i = 0; i < activitiesCheckbox.length; i++) {
-  //   if (activitiesCheckbox[i].checked === false) {
-  //       activitiesFieldSet.focus();
-  //   }
-  // }
+
+const activitiesLegend = document.querySelector('.activities legend');
+ let activityTracker = 7; // there are 7 activities total
+ //loop over the activity checkboxes
+ //reduce the activityTracker by 1 for each unchecked unput
+ //if the tracker hits 0 alert the user to sign up for activity
+  for (let i = 0; i < activitiesCheckbox.length; i++) {
+    if (activitiesCheckbox[i].checked === false) {
+        activityTracker -= 1;
+    }
+  }
+  if (activityTracker === 0) {
+    activitiesFieldSet.focus();
+    activitiesLegend.classList.add('invalid-text');
+    activitiesLegend.textContent = "Please choose at least one activity!";
+  } else {
+    activitiesLegend.classList.remove('invalid-text');
+    activitiesLegend.textContent = "Register for Activities";
+  }
 
   // If the selected payment option is "Credit Card," make sure the user has supplied a credit card number,
   const submitButton = document.querySelector('button[type="submit"]');
@@ -244,11 +259,11 @@ form.addEventListener('submit', (e) => {
      if(zipCode.value === '' || isNaN(zipCode.value) === true || zipCode.value.length !== 5) {
          zipCode.focus();
          zipCode.classList.add('invalid');
-         zipcodeLabel.classList.add('invalid-text');
+         zipcodeLabel.classList.add('sm-invalid-text');
          zipcodeLabel.innerText = 'Enter a 5 digit zip code';
      } else {
        zipCode.classList.remove('invalid');
-       zipcodeLabel.classList.remove('invalid-text');
+       zipcodeLabel.classList.remove('sm-invalid-text');
        zipcodeLabel.innerText = 'Zip Code:';
      }
     //check to make sure cvv is not left blank, is 3 digits, and is only numbers

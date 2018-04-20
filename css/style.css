@@ -144,6 +144,12 @@ input.invalid {
   font-weight: bold;
 }
 
+.sm-invalid-text {
+  color: red;
+  font-size: 12px;
+  font-weight: bold;
+}
+
 /* =================================
   Helper Classes
 ==================================== */
