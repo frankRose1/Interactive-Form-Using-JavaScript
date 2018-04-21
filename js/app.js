@@ -197,13 +197,18 @@ form.addEventListener('submit', (e) => {
 
   //validate email
   const emailInput = document.getElementById('mail');
-  let userEmail = document.getElementById('mail').value; //gets user email input
-  let atPosition = userEmail.indexOf('@'); //gets position of @ symbol
-  let dotPosition = userEmail.lastIndexOf('.'); //gets position of .symbol
+  const userEmail = document.getElementById('mail').value; //gets user email input
   const emailLabel = document.querySelector('label[for="mail"]');
-  //checks to see if the @ symbol is not the first character of the Email
-  //and the dot is atleast one character after the @ sign
-  if (atPosition < 1 || (dotPosition - atPosition < 2 || userEmail.value === '') ) {
+  const pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  let evaluator = true;
+  //tests user input against the reg-expression variable
+   if (pattern.test(userEmail) === true) {
+      evaluator = true;
+   } else {
+     evaluator = false;
+   }
+
+  if (evaluator === false || userEmail === '' ) {
     emailLabel.focus();
     emailInput.classList.add('invalid');
     emailLabel.classList.add('invalid-text');
@@ -241,6 +246,16 @@ const activitiesLegend = document.querySelector('.activities legend');
   const zipcodeLabel = document.querySelector('label[for="zip"]');
   const cvvNumber = document.getElementById('cvv');
   const cvvLabel = document.querySelector('label[for="cvv"]');
+  const selectOption = document.querySelector('option[value="select_method"]');
+  const paymentLabel = document.querySelector('label[for="payment"]');
+  //alert user if no payment method was selected
+  if(selectOption.selected) {
+    paymentLabel.classList.add('invalid-text');
+    paymentLabel.textContent = "Please choose a payment method!";
+  } else {
+    paymentLabel.classList.remove('invalid-text');
+    paymentLabel.textContent = "I'm going to pay with:";
+  }
 
   if (creditCardOption.selected) {
 
