@@ -2,7 +2,6 @@ const form = document.querySelector('form');
 const nameInput = document.getElementById('name');
 const jobRole = document.getElementById('title');
 const otherJobField = document.getElementById('other-title');
-otherJobField.style.display = 'none';
 //T-SHIRT VARIABLES
 const shirtColors = document.querySelectorAll('#color option');
 const shirtDesign = document.getElementById('design');
@@ -14,6 +13,49 @@ const gold = createColors('gold', 'Gold');
 const tomato = createColors('tomato', 'Tomato');
 const steelBlue = createColors('steelblue', 'Steel Blue');
 const dimGrey = createColors('dimgrey', 'Dim Grey');
+//ACTIVITIES VARIABLES
+const activitiesFieldSet = document.querySelector('.activities');
+const activitiesCheckbox = document.querySelectorAll('.activities input[type="checkbox"]');
+  //individual checkbox activities
+const jsFrameworks = activitiesCheckbox[1];
+const jsLibs = activitiesCheckbox[2];
+const express = activitiesCheckbox[3];
+const node = activitiesCheckbox[4];
+const buildTools = activitiesCheckbox[5];
+const npm = activitiesCheckbox[6];
+const activitiesLabel = document.querySelector('.activities label');
+const totalCostDiv = document.createElement('div');
+let totalCost = 0;
+//PAYMENT OPTIONS VARIABLES
+const paymentOptions = document.getElementById('payment');
+const creditCardInfo = document.getElementById('credit-card');
+const creditCardOption = document.querySelector('#payment option[value="credit card"]');
+const paypalInfo = document.querySelectorAll('div p')[0];
+const bitCoinInfo = document.querySelectorAll('div p')[1];
+//FORM VALIDATION VARIABLES
+const nameLabel = document.querySelector('label[for="name"]');
+    //email vars
+const emailInput = document.getElementById('mail');
+const emailLabel = document.querySelector('label[for="mail"]');
+const pattern = /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+[,;]?[ ]?)+$/;
+    //activity variables
+const activitiesLegend = document.querySelector('.activities legend');
+    //payment variables
+const submitButton = document.querySelector('button[type="submit"]');
+const ccNumber = document.getElementById('cc-num');
+const ccNumLabel = document.querySelector('label[for="cc-num"]');
+const zipCode = document.getElementById('zip');
+const zipcodeLabel = document.querySelector('label[for="zip"]');
+const cvvNumber = document.getElementById('cvv');
+const cvvLabel = document.querySelector('label[for="cvv"]');
+const selectOption = document.querySelector('option[value="select_method"]');
+const paymentLabel = document.querySelector('label[for="payment"]');
+
+//add default settings to certain elements
+creditCardOption.selected = 'selected';
+paypalInfo.style.display = 'none';
+bitCoinInfo.style.display = 'none';
+otherJobField.style.display = 'none';
 
 // When the page loads, give focus to the first text field
 window.addEventListener('load', () => {
@@ -29,6 +71,7 @@ jobRole.addEventListener('change', (e) => {
     otherJobField.style.display = 'none';
     }
 });
+
 //                                                         T-SHIRT SECTION
 //create t-shirt color variables
 function createColors(value, innerText) {
@@ -49,7 +92,7 @@ informUser.setAttribute('selected', true);
 shirtDesign.addEventListener('change', (e) => {
     const shirtColorMenu = document.getElementById('color');
     const shirtColors = document.querySelectorAll('#color option');
-
+    //remove the variables again upon each change in user selection
     shirtColors.forEach(color => {
       shirtColorMenu.removeChild(color);
     });
@@ -62,31 +105,18 @@ shirtDesign.addEventListener('change', (e) => {
        shirtColorMenu.appendChild(tomato);
        shirtColorMenu.appendChild(steelBlue);
        shirtColorMenu.appendChild(dimGrey);
-    } else{
+    } else {
        shirtColorMenu.appendChild(informUser);
     }
    });
+
 //                                                         ACTIVITIES SECTION
-
-const activitiesFieldSet = document.querySelector('.activities');
-const activitiesCheckbox = document.querySelectorAll('.activities input[type="checkbox"]');
-  //individual checkbox activities
-const jsFrameworks = activitiesCheckbox[1];
-const jsLibs = activitiesCheckbox[2];
-const express = activitiesCheckbox[3];
-const node = activitiesCheckbox[4];
-const buildTools = activitiesCheckbox[5];
-const npm = activitiesCheckbox[6];
-const activitiesLabel = document.querySelector('.activities label');
-const totalCostDiv = document.createElement('div');
-let totalCost = 0;
-
 activitiesFieldSet.addEventListener('change', (e) => {
   // use .substr to target the cost at the end of each string inside the otherLabel
   //accumulate the cost in a variable as the user clicks on various avtivites
   //then add the total to the totalCostDiv that has been created
  if (e.target.type === 'checkbox') {
-   const accumulatedCost = parseInt(e.target.parentNode.textContent.substr(-3));
+   let accumulatedCost = parseInt(e.target.parentNode.textContent.substr(-3));
    if (e.target.checked) {
      totalCost += accumulatedCost;
    } else {
@@ -95,7 +125,6 @@ activitiesFieldSet.addEventListener('change', (e) => {
    totalCostDiv.textContent = `Your total cost is: $${totalCost}`;
    activitiesFieldSet.appendChild(totalCostDiv);
  }
-
   //specific checkboxes must be disabled if their scheduled time conflicts
   // with another activity
   if (jsFrameworks.checked) {
@@ -126,21 +155,9 @@ activitiesFieldSet.addEventListener('change', (e) => {
       activitiesCheckbox[i].parentNode.style.color = "#000";
     }
   }
-
 });
 
-//                                    PAYMENT INFO section
-// Display payment sections based on the payment option chosen in the select menu
-const paymentOptions = document.getElementById('payment');
-const creditCardInfo = document.getElementById('credit-card');
-const creditCardOption = document.querySelector('#payment option[value="credit card"]');
-const paypalInfo = document.querySelectorAll('div p')[0];
-const bitCoinInfo = document.querySelectorAll('div p')[1];
-
-creditCardOption.selected = 'selected';//set credit card as the default payment option
-//hide the paypal and bitcoin sections by default
-paypalInfo.style.display = 'none';
-bitCoinInfo.style.display = 'none';
+//                                    PAYMENT INFO SECTION
 // show/hide payment section based on what user selects from the payment options dropdown menu
 paymentOptions.addEventListener('change', (e) => {
   if (e.target.value === 'paypal' ) {
@@ -162,22 +179,11 @@ paymentOptions.addEventListener('change', (e) => {
   }
 });
 
-
-
-// Form validation:
-// If any of the following validation errors exist, prevent the user from submitting the form:
-
-// Name field can't be blank
-
-// Email field must be a validly formatted e-mail address (you don't have to check that it's a real e-mail address, just that it's formatted like one: dave@teamtreehouse.com for example.
-
-// Must select at least one checkbox under the "Register for Activities" section of the form.
-
+//                                   FORM VALIDATION SECTION
+//evaluate the name field, email field, activities checkboxes, and payment info
 form.addEventListener('submit', (e) => {
-  //validate name section, name field cant be blank
-  const nameLabel = document.querySelector('label[for="name"]');
-  let usersName = nameInput.value;
-  if (usersName === '') {
+//NAME VALIDATION
+  if (nameInput.value === '') {
     e.preventDefault();
     nameInput.focus();
     nameInput.classList.add('invalid');
@@ -189,20 +195,16 @@ form.addEventListener('submit', (e) => {
     nameLabel.textContent = "Name:";
   }
 
-  //validate email
-  const emailInput = document.getElementById('mail');
-  const userEmail = document.getElementById('mail').value; //gets user email input
-  const emailLabel = document.querySelector('label[for="mail"]');
-  const pattern = /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+[,;]?[ ]?)+$/;
+//EMAIL VALIDATION
   let evaluator = true;
   //tests user input against the reg-expression variable(pattern)
-   if (pattern.test(userEmail) === true) {
+   if (pattern.test(emailInput.value) === true) {
       evaluator = true;
    } else {
      evaluator = false;
    }
 
-  if (evaluator === false || userEmail === '' ) {
+  if (evaluator === false || emailInput.value === '' ) {
     e.preventDefault();
     emailLabel.focus();
     emailInput.classList.add('invalid');
@@ -214,7 +216,7 @@ form.addEventListener('submit', (e) => {
       emailLabel.textContent = "Email:";
   }
 
-const activitiesLegend = document.querySelector('.activities legend');
+//ACTIVITIES VALIDATION
  let activityTracker = 7; // there are 7 activities total
  //loop over the activity checkboxes
  //reduce the activityTracker by 1 for each unchecked input
@@ -233,17 +235,8 @@ const activitiesLegend = document.querySelector('.activities legend');
     activitiesLegend.textContent = "Register for Activities";
   }
 
-  // If the selected payment option is "Credit Card," make sure the user has supplied a credit card number,
-  const submitButton = document.querySelector('button[type="submit"]');
-  const ccNumber = document.getElementById('cc-num');
-  const ccNumLabel = document.querySelector('label[for="cc-num"]');
-  const zipCode = document.getElementById('zip');
-  const zipcodeLabel = document.querySelector('label[for="zip"]');
-  const cvvNumber = document.getElementById('cvv');
-  const cvvLabel = document.querySelector('label[for="cvv"]');
-  const selectOption = document.querySelector('option[value="select_method"]');
-  const paymentLabel = document.querySelector('label[for="payment"]');
-  //alert user if no payment method was selected
+//PAYMENT VALIDATION
+//alert user if no payment method was selected
   if(selectOption.selected) {
     e.preventDefault();
     paymentLabel.classList.add('invalid-text');
@@ -252,7 +245,7 @@ const activitiesLegend = document.querySelector('.activities legend');
     paymentLabel.classList.remove('invalid-text');
     paymentLabel.textContent = "I'm going to pay with:";
   }
-
+//CC VALIDATION
   if (creditCardOption.selected) {
     //check to make sure credit card field isn't blank, is proper length, and is only numbers
     if(ccNumber.value === '' || isNaN(ccNumber.value) === true || ccNumber.value.length > 16 || ccNumber.value.length < 13) {
