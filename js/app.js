@@ -1,23 +1,26 @@
 const form = document.querySelector('form');
-const fieldSet1 = document.querySelectorAll('fieldset')[0];
 const nameInput = document.getElementById('name');
 const jobRole = document.getElementById('title');
-const jobOptions = jobRole.children;
 const otherJobField = document.getElementById('other-title');
 otherJobField.style.display = 'none';
-//t-shirt section
+//T-SHIRT VARIABLES
+const shirtColors = document.querySelectorAll('#color option');
 const shirtDesign = document.getElementById('design');
-const shirtColor = document.getElementById('color');
-
+const shirtColorMenu = document.getElementById('color');
+const informUser = createColors('default', 'Select a T-shirt theme');
+const cornFlowerBlue = createColors('cornflowerblue', 'Cornflower Blue');
+const darkSlateGrey = createColors('darkslategrey', 'Dark Slate Grey');
+const gold = createColors('gold', 'Gold');
+const tomato = createColors('tomato', 'Tomato');
+const steelBlue = createColors('steelblue', 'Steel Blue');
+const dimGrey = createColors('dimgrey', 'Dim Grey');
 
 // When the page loads, give focus to the first text field
 window.addEventListener('load', () => {
   nameInput.focus({preventScroll: false});
 });
 
-
 //                                                         JOB ROLE SECTION
-
 // A text field that will be revealed when the "Other" option is selected from the "Job Role" drop down menu.
 jobRole.addEventListener('change', (e) => {
     if (e.target.value === "other") {
@@ -26,52 +29,43 @@ jobRole.addEventListener('change', (e) => {
     otherJobField.style.display = 'none';
     }
 });
-
 //                                                         T-SHIRT SECTION
-//t-shirt color options
-const cornFlowerBlue = document.querySelector('option[value ="cornflowerblue"]');
-const darkSlateGrey = document.querySelector('option[value ="darkslategrey"]');
-const gold = document.querySelector('option[value ="gold"]');
-
-const tomato = document.querySelector('option[value ="tomato"]');
-const steelBlue = document.querySelector('option[value ="steelblue"]');
-const dimGrey = document.querySelector('option[value ="dimgrey"]');
-function removeColorOptions() {
-  shirtColor.removeChild(cornFlowerBlue);
-  shirtColor.removeChild(darkSlateGrey);
-  shirtColor.removeChild(gold);
-  shirtColor.removeChild(tomato);
-  shirtColor.removeChild(steelBlue);
-  shirtColor.removeChild(dimGrey);
+//create t-shirt color variables
+function createColors(value, innerText) {
+  const shirtColor = document.createElement('option');
+  shirtColor.value = value;
+  shirtColor.innerText = innerText;
+  return shirtColor;
 }
-removeColorOptions();
-
+//hide all of the color options to start
+shirtColors.forEach(color => {
+  shirtColorMenu.removeChild(color);
+});
+//inform the user to choose a theme
+shirtColorMenu.appendChild(informUser);
+informUser.setAttribute('selected', true);
 // If the user selects "Theme - JS Puns" then the color menu should only display "Cornflower Blue," "Dark Slate Grey," and "Gold."
 // If the user selects "Theme - I ♥ JS" then the color menu should only display "Tomato," "Steel Blue," and "Dim Grey."
 shirtDesign.addEventListener('change', (e) => {
-   if (e.target.value == 'js puns') {
-     shirtColor.appendChild(cornFlowerBlue);
-     shirtColor.appendChild(darkSlateGrey);
-     shirtColor.appendChild(gold);
-     //remove other shirt colors if active
-     shirtColor.removeChild(tomato);
-     shirtColor.removeChild(steelBlue);
-     shirtColor.removeChild(dimGrey);
-   } else if (e.target.value == 'heart js') {
-     shirtColor.appendChild(tomato);
-     shirtColor.appendChild(steelBlue);
-     shirtColor.appendChild(dimGrey);
-      //remove other shirt colors if active
-     shirtColor.removeChild(cornFlowerBlue);
-     shirtColor.removeChild(darkSlateGrey);
-     shirtColor.removeChild(gold);
-   } else {
-     removeColorOptions();
-   }
- });
+    const shirtColorMenu = document.getElementById('color');
+    const shirtColors = document.querySelectorAll('#color option');
 
+    shirtColors.forEach(color => {
+      shirtColorMenu.removeChild(color);
+    });
 
-
+      if (e.target.value === "js puns") {
+       shirtColorMenu.appendChild(cornFlowerBlue);
+       shirtColorMenu.appendChild(darkSlateGrey);
+       shirtColorMenu.appendChild(gold);
+    } else if (e.target.value === "heart js") {
+       shirtColorMenu.appendChild(tomato);
+       shirtColorMenu.appendChild(steelBlue);
+       shirtColorMenu.appendChild(dimGrey);
+    } else{
+       shirtColorMenu.appendChild(informUser);
+    }
+   });
 //                                                         ACTIVITIES SECTION
 
 const activitiesFieldSet = document.querySelector('.activities');
@@ -180,11 +174,11 @@ paymentOptions.addEventListener('change', (e) => {
 // Must select at least one checkbox under the "Register for Activities" section of the form.
 
 form.addEventListener('submit', (e) => {
-      e.preventDefault();
   //validate name section, name field cant be blank
   const nameLabel = document.querySelector('label[for="name"]');
   let usersName = nameInput.value;
   if (usersName === '') {
+    e.preventDefault();
     nameInput.focus();
     nameInput.classList.add('invalid');
     nameLabel.classList.add('invalid-text');
@@ -199,9 +193,9 @@ form.addEventListener('submit', (e) => {
   const emailInput = document.getElementById('mail');
   const userEmail = document.getElementById('mail').value; //gets user email input
   const emailLabel = document.querySelector('label[for="mail"]');
-  const pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  const pattern = /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+[,;]?[ ]?)+$/;
   let evaluator = true;
-  //tests user input against the reg-expression variable
+  //tests user input against the reg-expression variable(pattern)
    if (pattern.test(userEmail) === true) {
       evaluator = true;
    } else {
@@ -209,6 +203,7 @@ form.addEventListener('submit', (e) => {
    }
 
   if (evaluator === false || userEmail === '' ) {
+    e.preventDefault();
     emailLabel.focus();
     emailInput.classList.add('invalid');
     emailLabel.classList.add('invalid-text');
@@ -222,7 +217,7 @@ form.addEventListener('submit', (e) => {
 const activitiesLegend = document.querySelector('.activities legend');
  let activityTracker = 7; // there are 7 activities total
  //loop over the activity checkboxes
- //reduce the activityTracker by 1 for each unchecked unput
+ //reduce the activityTracker by 1 for each unchecked input
  //if the tracker hits 0 alert the user to sign up for activity
   for (let i = 0; i < activitiesCheckbox.length; i++) {
     if (activitiesCheckbox[i].checked === false) {
@@ -230,7 +225,7 @@ const activitiesLegend = document.querySelector('.activities legend');
     }
   }
   if (activityTracker === 0) {
-    activitiesFieldSet.focus();
+    e.preventDefault();
     activitiesLegend.classList.add('invalid-text');
     activitiesLegend.textContent = "Please choose at least one activity!";
   } else {
@@ -250,6 +245,7 @@ const activitiesLegend = document.querySelector('.activities legend');
   const paymentLabel = document.querySelector('label[for="payment"]');
   //alert user if no payment method was selected
   if(selectOption.selected) {
+    e.preventDefault();
     paymentLabel.classList.add('invalid-text');
     paymentLabel.textContent = "Please choose a payment method!";
   } else {
@@ -258,9 +254,9 @@ const activitiesLegend = document.querySelector('.activities legend');
   }
 
   if (creditCardOption.selected) {
-
     //check to make sure credit card field isn't blank, is proper length, and is only numbers
     if(ccNumber.value === '' || isNaN(ccNumber.value) === true || ccNumber.value.length > 16 || ccNumber.value.length < 13) {
+      e.preventDefault();
         ccNumber.focus();
         ccNumber.classList.add('invalid');
         ccNumLabel.classList.add('invalid-text');
@@ -269,9 +265,10 @@ const activitiesLegend = document.querySelector('.activities legend');
       ccNumber.classList.remove('invalid');
       ccNumLabel.classList.remove('invalid-text');
       ccNumLabel.innerText = 'Card Number:';
-    }
+    }//end of ccnumber validation
      //check to make sure zip code is not left blank, is 5 digits, and is only numbers
      if(zipCode.value === '' || isNaN(zipCode.value) === true || zipCode.value.length !== 5) {
+         e.preventDefault();
          zipCode.focus();
          zipCode.classList.add('invalid');
          zipcodeLabel.classList.add('sm-invalid-text');
@@ -280,9 +277,10 @@ const activitiesLegend = document.querySelector('.activities legend');
        zipCode.classList.remove('invalid');
        zipcodeLabel.classList.remove('sm-invalid-text');
        zipcodeLabel.innerText = 'Zip Code:';
-     }
+     }//end of zip validation
     //check to make sure cvv is not left blank, is 3 digits, and is only numbers
      if(cvvNumber.value === '' || isNaN(cvvNumber.value) === true || cvvNumber.value.length !== 3) {
+         e.preventDefault();
          cvvNumber.focus();
          cvvNumber.classList.add('invalid');
          cvvLabel.classList.add('invalid-text');
@@ -291,6 +289,6 @@ const activitiesLegend = document.querySelector('.activities legend');
        cvvNumber.classList.remove('invalid');
        cvvLabel.classList.remove('invalid-text');
        cvvLabel.innerText = 'CVV:';
-     }
+     }//end of cvv validation
   } //end of "if credit card was selected"
 });
