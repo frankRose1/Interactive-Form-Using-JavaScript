@@ -51,26 +51,7 @@ const cvvLabel = document.querySelector('label[for="cvv"]');
 const selectOption = document.querySelector('option[value="select_method"]');
 const paymentLabel = document.querySelector('label[for="payment"]');
 
-//add default settings to certain elements
-creditCardOption.selected = 'selected';
-paypalInfo.style.display = 'none';
-bitCoinInfo.style.display = 'none';
-otherJobField.style.display = 'none';
-
-// When the page loads, give focus to the first text field
-window.addEventListener('load', () => nameInput.focus( {preventScroll: false} ));
-
-//                                                         JOB ROLE SECTION
-// A text field that will be revealed when the "Other" option is selected from the "Job Role" drop down menu.
-jobRole.addEventListener('change', (e) => {
-    if (e.target.value === "other") {
-     otherJobField.style.display = 'block';
-    } else {
-    otherJobField.style.display = 'none';
-    }
-});
-
-//                                                         T-SHIRT SECTION
+// FUNCTIONS
 //create t-shirt color variables
 function createColors(value, innerText) {
   const shirtColor = document.createElement('option');
@@ -86,6 +67,38 @@ function appendElement(parent, child1, child2, child3) {
       parent.appendChild(child3);
     }
 
+function displayElement(ele1, ele2, ele3, show, hide) {
+  ele1.style.display = show;
+  ele2.style.display = hide;
+  ele3.style.display = hide;
+}
+
+function hideElement(ele1, ele2, ele3, display) {
+  ele1.style.display = display;
+  ele2.style.display = display;
+  ele3.style.display = display;
+}
+
+/////////////////
+
+//add default settings to certain elements
+creditCardOption.selected = 'selected';
+hideElement(paypalInfo, bitCoinInfo, otherJobField, 'none');
+
+// When the page loads, give focus to the first text field
+window.addEventListener('load', () => nameInput.focus( {preventScroll: false} ));
+
+//                                                         JOB ROLE SECTION
+// A text field that will be revealed when the "Other" option is selected from the "Job Role" drop down menu.
+jobRole.addEventListener('change', (e) => {
+    if (e.target.value === "other") {
+     otherJobField.style.display = 'block';
+    } else {
+    otherJobField.style.display = 'none';
+    }
+});
+
+//                                                         T-SHIRT SECTION
 //hide all of the color options to start
 shirtColors.forEach(color => {
   shirtColorMenu.removeChild(color);
@@ -163,28 +176,16 @@ activitiesFieldSet.addEventListener('change', (e) => {
 });
 
 //                                    PAYMENT INFO SECTION
-
-function displayElement(element, display) {
-  element.style.display = display;
-}
 // show/hide payment section based on what user selects from the payment options dropdown menu
 paymentOptions.addEventListener('change', (e) => {
   if (e.target.value === 'paypal' ) {
-    displayElement(paypalInfo, 'block');
-    displayElement(creditCardInfo, 'none');
-    displayElement(bitCoinInfo, 'none');
+    displayElement(paypalInfo, creditCardInfo, bitCoinInfo, 'block', 'none');
   } else if (e.target.value === 'bitcoin') {
-    displayElement(bitCoinInfo, 'block');
-    displayElement(creditCardInfo, 'none');
-    displayElement(paypalInfo, 'none');
+    displayElement(bitCoinInfo, creditCardInfo, paypalInfo, 'block', 'none');
   } else if (e.target.value === 'credit card') {
-    displayElement(creditCardInfo, 'block');
-    displayElement(paypalInfo, 'none');
-    displayElement(bitCoinInfo, 'none');
+    displayElement(creditCardInfo, bitCoinInfo, paypalInfo, 'block', 'none');
   } else {
-    displayElement(paypalInfo, 'none');
-    displayElement(creditCardInfo, 'none');
-    displayElement(bitCoinInfo, 'none');
+    hideElement(paypalInfo, creditCardInfo, bitCoinInfo, 'none');
   }
 });
 
@@ -226,15 +227,16 @@ form.addEventListener('submit', (e) => {
   }
 
 //ACTIVITIES VALIDATION
- let activityTracker = 7; // there are 7 activities total
+ let activityTracker = activitiesCheckbox.length; // there are 7 activities total
  //loop over the activity checkboxes
  //reduce the activityTracker by 1 for each unchecked input
  //if the tracker hits 0 alert the user to sign up for activity
-  for (let i = 0; i < activitiesCheckbox.length; i++) {
-    if (activitiesCheckbox[i].checked === false) {
-        activityTracker -= 1;
-    }
-  }
+ activitiesCheckbox.forEach(input => {
+   if (input.checked === false) {
+      activityTracker -= 1;
+   }
+ });
+
   if (activityTracker === 0) {
     e.preventDefault();
     activitiesLegend.classList.add('invalid-text');
