@@ -150,6 +150,7 @@ activitiesFieldSet.addEventListener('change', (e) => {
   } else {
     jsLibs.disabled = false;
   }
+
  //if a checkbox is disabled target the parent node and alter the text color to reflect event conflict
   activitiesCheckbox.forEach( input => {
     if (input.disabled === true) {
@@ -159,34 +160,31 @@ activitiesFieldSet.addEventListener('change', (e) => {
     }
   });
 
-  // for(let i = 0; i < activitiesCheckbox.length; i++) {
-  //   if(activitiesCheckbox[i].disabled === true) {
-  //     activitiesCheckbox[i].parentNode.style.color = "#C0C0C0";
-  //   } else if (activitiesCheckbox[i].disabled === false) {
-  //     activitiesCheckbox[i].parentNode.style.color = "#000";
-  //   }
-  // }
 });
 
 //                                    PAYMENT INFO SECTION
+
+function displayElement(element, display) {
+  element.style.display = display;
+}
 // show/hide payment section based on what user selects from the payment options dropdown menu
 paymentOptions.addEventListener('change', (e) => {
   if (e.target.value === 'paypal' ) {
-    paypalInfo.style.display = 'block';
-    creditCardInfo.style.display = 'none';
-    bitCoinInfo.style.display = 'none';
+    displayElement(paypalInfo, 'block');
+    displayElement(creditCardInfo, 'none');
+    displayElement(bitCoinInfo, 'none');
   } else if (e.target.value === 'bitcoin') {
-    bitCoinInfo.style.display = 'block';
-    creditCardInfo.style.display = 'none';
-    paypalInfo.style.display = 'none';
-  } else if ((e.target.value === 'credit card')) {
-    creditCardInfo.style.display = 'block';
-    bitCoinInfo.style.display = 'none';
-    paypalInfo.style.display = 'none';
+    displayElement(bitCoinInfo, 'block');
+    displayElement(creditCardInfo, 'none');
+    displayElement(paypalInfo, 'none');
+  } else if (e.target.value === 'credit card') {
+    displayElement(creditCardInfo, 'block');
+    displayElement(paypalInfo, 'none');
+    displayElement(bitCoinInfo, 'none');
   } else {
-    creditCardInfo.style.display = 'none';
-    bitCoinInfo.style.display = 'none';
-    paypalInfo.style.display = 'none';
+    displayElement(paypalInfo, 'none');
+    displayElement(creditCardInfo, 'none');
+    displayElement(bitCoinInfo, 'none');
   }
 });
 
