@@ -58,9 +58,7 @@ bitCoinInfo.style.display = 'none';
 otherJobField.style.display = 'none';
 
 // When the page loads, give focus to the first text field
-window.addEventListener('load', () => {
-  nameInput.focus({preventScroll: false});
-});
+window.addEventListener('load', () => nameInput.focus( {preventScroll: false} ));
 
 //                                                         JOB ROLE SECTION
 // A text field that will be revealed when the "Other" option is selected from the "Job Role" drop down menu.
@@ -80,13 +78,23 @@ function createColors(value, innerText) {
   shirtColor.innerText = innerText;
   return shirtColor;
 }
+
+//append shirt colors
+function appendElement(parent, child1, child2, child3) {
+      parent.appendChild(child1);
+      parent.appendChild(child2);
+      parent.appendChild(child3);
+    }
+
 //hide all of the color options to start
 shirtColors.forEach(color => {
   shirtColorMenu.removeChild(color);
 });
+
 //inform the user to choose a theme
 shirtColorMenu.appendChild(informUser);
 informUser.setAttribute('selected', true);
+
 // If the user selects "Theme - JS Puns" then the color menu should only display "Cornflower Blue," "Dark Slate Grey," and "Gold."
 // If the user selects "Theme - I ♥ JS" then the color menu should only display "Tomato," "Steel Blue," and "Dim Grey."
 shirtDesign.addEventListener('change', (e) => {
@@ -98,17 +106,13 @@ shirtDesign.addEventListener('change', (e) => {
     });
 
       if (e.target.value === "js puns") {
-       shirtColorMenu.appendChild(cornFlowerBlue);
-       shirtColorMenu.appendChild(darkSlateGrey);
-       shirtColorMenu.appendChild(gold);
+      appendElement(shirtColorMenu, cornFlowerBlue, darkSlateGrey, gold);
     } else if (e.target.value === "heart js") {
-       shirtColorMenu.appendChild(tomato);
-       shirtColorMenu.appendChild(steelBlue);
-       shirtColorMenu.appendChild(dimGrey);
+      appendElement(shirtColorMenu, tomato, steelBlue, dimGrey);
     } else {
        shirtColorMenu.appendChild(informUser);
     }
-   });
+   }); //end event listener
 
 //                                                         ACTIVITIES SECTION
 activitiesFieldSet.addEventListener('change', (e) => {
@@ -204,7 +208,7 @@ form.addEventListener('submit', (e) => {
      evaluator = false;
    }
 
-  if (evaluator === false || emailInput.value === '' ) {
+  if ( emailInput.value === '' || evaluator === false ) {
     e.preventDefault();
     emailLabel.focus();
     emailInput.classList.add('invalid');
