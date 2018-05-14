@@ -118,7 +118,6 @@ shirtDesign.addEventListener('change', (e) => {
 activitiesFieldSet.addEventListener('change', (e) => {
   // use .substr to target the cost at the end of each string inside the otherLabel
   //accumulate the cost in a variable as the user clicks on various avtivites
-  //then add the total to the totalCostDiv that has been created
  if (e.target.type === 'checkbox') {
    let accumulatedCost = parseInt(e.target.parentNode.textContent.substr(-3));
    if (e.target.checked) {
@@ -129,8 +128,8 @@ activitiesFieldSet.addEventListener('change', (e) => {
    totalCostDiv.textContent = `Your total cost is: $${totalCost}`;
    activitiesFieldSet.appendChild(totalCostDiv);
  }
-  //specific checkboxes must be disabled if their scheduled time conflicts
-  // with another activity
+
+  //specific checkboxes must be disabled if their scheduled time conflicts with another activity
   if (jsFrameworks.checked) {
     express.disabled = true;
   } else {
@@ -152,13 +151,21 @@ activitiesFieldSet.addEventListener('change', (e) => {
     jsLibs.disabled = false;
   }
  //if a checkbox is disabled target the parent node and alter the text color to reflect event conflict
-  for(let i = 0; i < activitiesCheckbox.length; i++) {
-    if(activitiesCheckbox[i].disabled === true) {
-      activitiesCheckbox[i].parentNode.style.color = "#C0C0C0";
-    } else if (activitiesCheckbox[i].disabled === false) {
-      activitiesCheckbox[i].parentNode.style.color = "#000";
+  activitiesCheckbox.forEach( input => {
+    if (input.disabled === true) {
+     input.parentNode.style.color = "#C0C0C0";
+    } else if (input.disabled === false) {
+      input.parentNode.style.color = "#000";
     }
-  }
+  });
+
+  // for(let i = 0; i < activitiesCheckbox.length; i++) {
+  //   if(activitiesCheckbox[i].disabled === true) {
+  //     activitiesCheckbox[i].parentNode.style.color = "#C0C0C0";
+  //   } else if (activitiesCheckbox[i].disabled === false) {
+  //     activitiesCheckbox[i].parentNode.style.color = "#000";
+  //   }
+  // }
 });
 
 //                                    PAYMENT INFO SECTION
