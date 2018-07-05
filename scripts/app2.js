@@ -20,7 +20,6 @@ const otherJobInput = $('input#other-title');
 otherJobInput.style.display = 'none';
 
 function showOtherField(e){
-  console.log();
   if (e.target.value === 'other') {
     otherJobInput.style.display = 'block';
   } else {
@@ -39,18 +38,18 @@ $('#title').on('change', showOtherField);
 
   function jsPunsOptions(){
     const punsOptions = `
-      <option value="cornflowerblue">Cornflower Blue (JS Puns shirt only)</option>
-      <option value="darkslategrey">Dark Slate Grey (JS Puns shirt only)</option>
-      <option value="gold">Gold (JS Puns shirt only)</option>
+      <option value="cornflowerblue">Cornflower Blue</option>
+      <option value="darkslategrey">Dark Slate Grey</option>
+      <option value="gold">Gold</option>
       `;
       colorMenu.innerHTML = punsOptions;
   }
 
   function heartJsOptions(){
     const heartOptions = `
-      <option value="tomato">Tomato (I &#9829; JS shirt only)</option>
-      <option value="steelblue">Steel Blue (I &#9829; JS shirt only)</option>
-      <option value="dimgrey">Dim Grey (I &#9829; JS shirt only)</option>
+      <option value="tomato">Tomato</option>
+      <option value="steelblue">Steel Blue</option>
+      <option value="dimgrey">Dim Grey</option>
     `;
     colorMenu.innerHTML = heartOptions;
   }
@@ -68,30 +67,75 @@ $('#title').on('change', showOtherField);
   $('select#design').on('change', createShirtOptions);
 
 
-  // PAYMENT SECTION
+  //5)ACTIVITIES SECTION
+    //if conflicting events are selected then the other checkboxes need to be disabled!
+    //also want to show the total at the bottom of the fieldset
+  const activitesCheckboxes = $$('.activity-cb');
+  const jsFrameworksCB = $('input[name="js-frameworks"]');
+  const jsLibrariesCB = $('input[name="js-libs"]');
+  const expressCB = $('input[name="express"]');
+  const nodeCB = $('input[name="node"]');
+
+  function activitesHandler(){
+      //frameworks and express conflict
+      if (this === jsFrameworksCB && this.checked) {
+        expressCB.disabled = true;
+        expressCB.parentElement.classList.add('disabled');
+      } else if (this === jsFrameworksCB && !this.checked) {
+        expressCB.disabled = false;
+        expressCB.parentElement.classList.remove('disabled');
+      } else if (this === expressCB && this.checked) {
+        jsFrameworksCB.disabled = true;
+        jsFrameworksCB.parentElement.classList.add('disabled');
+      } else if (this === expressCB && !this.checked) {
+        jsFrameworksCB.disabled = false;
+        jsFrameworksCB.parentElement.classList.remove('disabled');
+      }
+      //libraries and node  js conflict
+      if (this === jsLibrariesCB && this.checked) {
+        nodeCB.disabled = true;
+        nodeCB.parentElement.classList.add('disabled');
+      } else if (this === jsLibrariesCB && !this.checked) {
+        nodeCB.disabled = false;
+        nodeCB.parentElement.classList.remove('disabled');
+      } else if (this === nodeCB && this.checked) {
+        jsLibrariesCB.disabled = true;
+        jsLibrariesCB.parentElement.classList.add('disabled');
+      } else if (this === nodeCB && !this.checked) {
+        jsLibrariesCB.disabled = false;
+        jsLibrariesCB.parentElement.classList.remove('disabled');
+      }
+    }
+
+ activitesCheckboxes.on('change', activitesHandler);
+
+  //4) PAYMENT SECTION
     //default to the credit card option
     //show the apprpriate div if the related option is selected cc, bitcoin, paypal
     const creditCardDiv = $('div#credit-card');
     const paypalDiv = $('div#paypal');
     const bitcoinDiv = $('div#bitcoin');
-    paypalDiv.style.display = 'none';
-    bitcoinDiv.style.display = 'none';
+    const alertUserDiv = $('div.alert-user');
+    $('option[value="credit card"]').selected = true; //make credit card the default option
 
-    function togglePaymentDivs(show, hide1, hide2){
+    function togglePaymentDivs(show, hide1, hide2, hide3){
       show.style.display = 'block';
       hide1.style.display = 'none';
       hide2.style.display = 'none';
+      hide3.style.display = 'none';
     }
-    
+
+    togglePaymentDivs(creditCardDiv, paypalDiv, bitcoinDiv, alertUserDiv); //show the credit card by default
+
     function showPaymentFields(e){
       if (e.target.value === 'credit card') {
-        togglePaymentDivs(creditCardDiv, paypalDiv, bitcoinDiv);
+        togglePaymentDivs(creditCardDiv, paypalDiv, bitcoinDiv, alertUserDiv);
       } else if (e.target.value === 'bitcoin') {
-        togglePaymentDivs(bitcoinDiv, paypalDiv, creditCardDiv);
+        togglePaymentDivs(bitcoinDiv, paypalDiv, creditCardDiv, alertUserDiv);
       } else if (e.target.value === 'paypal') {
-        togglePaymentDivs(paypalDiv, bitcoinDiv, creditCardDiv);
+        togglePaymentDivs(paypalDiv, bitcoinDiv, creditCardDiv, alertUserDiv);
       } else {
-        console.log('show an alert div!');
+        togglePaymentDivs(alertUserDiv, bitcoinDiv, creditCardDiv, paypalDiv);
       }
     }
 

@@ -135,7 +135,10 @@ button:hover {
 	margin-top: 1.25em;
 }
 
-/* brigns attention to incomplete input fields */
+label.disabled{
+	color: #D3D3D3;
+}
+
 input.invalid {
   background-color: #ffdddd;
 }
@@ -148,6 +151,11 @@ input.invalid {
   color: red;
   font-size: 13px;
   font-weight: bold;
+}
+
+.alert-user p {
+	font-size: 1.3em;
+	color: #ff3232;
 }
 
 /* =================================
