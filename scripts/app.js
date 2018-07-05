@@ -191,6 +191,10 @@ paymentOptions.addEventListener('change', (e) => {
 
 //                                   FORM VALIDATION SECTION
 //evaluate the name field, email field, activities checkboxes, and payment info
+function toggleClass(element, action, className){
+    `${element}.classList.${action}('${className}')`;
+}
+
 form.addEventListener('submit', (e) => {
 //NAME VALIDATION
   if (nameInput.value === '') {
