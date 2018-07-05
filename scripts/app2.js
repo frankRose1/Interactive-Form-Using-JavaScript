@@ -66,52 +66,68 @@ $('#title').on('change', showOtherField);
 
   $('select#design').on('change', createShirtOptions);
 
-
-  //5)ACTIVITIES SECTION
-    //if conflicting events are selected then the other checkboxes need to be disabled!
-    //also want to show the total at the bottom of the fieldset
+  //3)ACTIVITIES SECTION
+    //if conflicting events are selected then the other checkboxes need to be disabled! and calculate total Price
   const activitesCheckboxes = $$('.activity-cb');
-  const jsFrameworksCB = $('input[name="js-frameworks"]');
-  const jsLibrariesCB = $('input[name="js-libs"]');
-  const expressCB = $('input[name="express"]');
-  const nodeCB = $('input[name="node"]');
+  const totalPriceDiv = document.createElement('div');
+  let totalPrice = 0;
+  totalPriceDiv.textContent = `Your total price: $${totalPrice}.00`;
+  $('fieldset.activities').appendChild(totalPriceDiv);
 
-  function activitesHandler(){
-      //frameworks and express conflict
-      if (this === jsFrameworksCB && this.checked) {
-        expressCB.disabled = true;
-        expressCB.parentElement.classList.add('disabled');
-      } else if (this === jsFrameworksCB && !this.checked) {
-        expressCB.disabled = false;
-        expressCB.parentElement.classList.remove('disabled');
-      } else if (this === expressCB && this.checked) {
-        jsFrameworksCB.disabled = true;
-        jsFrameworksCB.parentElement.classList.add('disabled');
-      } else if (this === expressCB && !this.checked) {
-        jsFrameworksCB.disabled = false;
-        jsFrameworksCB.parentElement.classList.remove('disabled');
-      }
-      //libraries and node  js conflict
-      if (this === jsLibrariesCB && this.checked) {
-        nodeCB.disabled = true;
-        nodeCB.parentElement.classList.add('disabled');
-      } else if (this === jsLibrariesCB && !this.checked) {
-        nodeCB.disabled = false;
-        nodeCB.parentElement.classList.remove('disabled');
-      } else if (this === nodeCB && this.checked) {
-        jsLibrariesCB.disabled = true;
-        jsLibrariesCB.parentElement.classList.add('disabled');
-      } else if (this === nodeCB && !this.checked) {
-        jsLibrariesCB.disabled = false;
-        jsLibrariesCB.parentElement.classList.remove('disabled');
-      }
+  function activitesHandler() {
+    //frameworks and express conflict
+    if(this.parentElement.textContent.includes('Tuesday 9am-12pm')){
+      activitesCheckboxes.forEach(cb => {
+        if(cb.parentElement.textContent.includes('Tuesday 9am-12pm') && cb !== this && this.checked){
+          cb.disabled = true;
+          cb.parentElement.classList.add('disabled');
+        } else if (cb.parentElement.textContent.includes('Tuesday 9am-12pm') && cb !== this && !this.checked) {
+          cb.disabled = false;
+          cb.parentElement.classList.remove('disabled');
+        }
+      });
+    }
+    //libraries and node  js conflict
+    if(this.parentElement.textContent.includes('Tuesday 1pm-4pm')){
+      activitesCheckboxes.forEach(cb => {
+        if(cb.parentElement.textContent.includes('Tuesday 1pm-4pm') && cb !== this && this.checked){
+          cb.disabled = true;
+          cb.parentElement.classList.add('disabled');
+        } else if(cb.parentElement.textContent.includes('Tuesday 1pm-4pm') && cb !== this && !this.checked) {
+          cb.disabled = false;
+          cb.parentElement.classList.remove('disabled');
+        }
+      });
+    }    
+  }
+
+  //main conferernce is $200 everything else is $100
+  function sumActivities(){
+    //if checkbox is checked add
+    if (this.name !== 'all' && this.checked) {
+      totalPrice += 100;
+    } else if (this.name === 'all' && this.checked) {
+      totalPrice += 200;
+    }
+    //if unchecked subtract
+    if (this.name !== 'all' && !this.checked) {
+      totalPrice -= 100;
+    } else if (this.name === 'all' && !this.checked) {
+      totalPrice -= 200;
     }
 
+    if (totalPrice < 0) {
+      totalPrice = 0;
+    }
+    totalPriceDiv.textContent = `Your total price: $${totalPrice}.00`;
+  }
+
  activitesCheckboxes.on('change', activitesHandler);
+ activitesCheckboxes.on('change', sumActivities);
 
   //4) PAYMENT SECTION
     //default to the credit card option
-    //show the apprpriate div if the related option is selected cc, bitcoin, paypal
+    //show the appropriate div if the related option is selected cc, bitcoin, paypal
     const creditCardDiv = $('div#credit-card');
     const paypalDiv = $('div#paypal');
     const bitcoinDiv = $('div#bitcoin');
@@ -141,4 +157,24 @@ $('#title').on('change', showOtherField);
 
   $('select#payment').on('change', showPaymentFields);
 
+//5) form submission validation
+    //name cant be blank
+    //email cant be blank and must be a proper email
+    //atleast one activity must be selected
+    //a payment method must be selected
+      //if they choose credit card
+        //inputs can only be numbers
+function checkName(){
+  const nameField = $('input#name');
+  if (nameField.value.length === 0) {
+    nameField.focus();
+    alert('give us your name!');
+  }
+}
+
+function validateForm(e){
+  e.preventDefault();
+  checkName();
+}
+$('form').on('submit', validateForm);
 
