@@ -1,4 +1,4 @@
-//bling.js
+//////START BLING.JS
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
 Node.prototype.on = window.on = function (name, fn) {
@@ -10,14 +10,13 @@ NodeList.prototype.on = NodeList.prototype.addEventListener = function (name, fn
     elem.on(name, fn);
   });
 };
-////////////////////////////////////////
+//////END BLING.JS
 
 $('input#name').focus(); //focus on the first input on page load
 
 //1)SHOW/HIDE 'OTHER' FIELD
-//hide the other field  and show it if other option is selected
 const otherJobInput = $('input#other-title');
-otherJobInput.style.display = 'none';
+otherJobInput.style.display = 'none'; //should be hidden by default
 
 function showOtherField(e){
   if (e.target.value === 'other') {
@@ -30,7 +29,7 @@ function showOtherField(e){
 $('#title').on('change', showOtherField);
 
 //2) T-SHIRT SECTION
-  //hide the color options by setting the innerHTML until a selection is made in the DESIGN select menu
+  //hide the color options until a selection is made in the DESIGN select menu
   //then show the appropriate shirts
   const colorMenu = $('select#color');
   const chooseOption = `<option value="choosedesign">&larr; Choose a design!</option>`;
@@ -67,7 +66,7 @@ $('#title').on('change', showOtherField);
   $('select#design').on('change', createShirtOptions);
 
   //3)ACTIVITIES SECTION
-    //if conflicting events are selected then the other checkboxes need to be disabled! and calculate total Price
+    //if conflicting events are selected then the other checkboxes need to be disabled!
   const activitesCheckboxes = $$('.activity-cb');
   const totalPriceDiv = document.createElement('div');
   let totalPrice = 0;
@@ -103,7 +102,7 @@ $('#title').on('change', showOtherField);
 
   //main conferernce is $200 everything else is $100
   function sumActivities(){
-    //if checkbox is checked add
+    //if checked add
     if (this.name !== 'all' && this.checked) {
       totalPrice += 100;
     } else if (this.name === 'all' && this.checked) {
@@ -126,7 +125,6 @@ $('#title').on('change', showOtherField);
  activitesCheckboxes.on('change', sumActivities);
 
   //4) PAYMENT SECTION
-    //default to the credit card option
     //show the appropriate div if the related option is selected cc, bitcoin, paypal
     const creditCardDiv = $('div#credit-card');
     const paypalDiv = $('div#paypal');
@@ -141,7 +139,7 @@ $('#title').on('change', showOtherField);
       hide3.style.display = 'none';
     }
 
-    togglePaymentDivs(creditCardDiv, paypalDiv, bitcoinDiv, alertUserDiv); //show the credit card by default
+    togglePaymentDivs(creditCardDiv, paypalDiv, bitcoinDiv, alertUserDiv); //show the credit card div by default
 
     function showPaymentFields(e){
       if (e.target.value === 'credit card') {
@@ -159,10 +157,16 @@ $('#title').on('change', showOtherField);
 
 //5) form submission validation
     //email cant be blank and must be a proper email
-    //atleast one activity must be selected
-    //a payment method must be selected
-      //if they choose credit card
-        //inputs can only be numbers
+function addInvalidText(element, message){
+  element.classList.add('invalid-text');
+  element.textContent = message;
+}
+
+function removeInvalidText(element, message){
+  element.classList.remove('invalid-text');
+  element.textContent = message;
+}
+
 function highlightInvalidInput(input, labelTarget, message){
   input.focus();
   const inputLabel = $(`label[for=${labelTarget}]`)
@@ -200,18 +204,66 @@ function checkActivities(){
     }
   });
   if (cbCounter === 0) {
-    activitiesLegend.classList.add('invalid-text');
-    activitiesLegend.textContent = 'Please choose atleast one activity!';
+    addInvalidText(activitiesLegend, 'Please choose atleast one activity!');
   } else if (cbCounter > 0) {
-    activitiesLegend.classList.remove('invalid-text');
-    activitiesLegend.textContent = 'Register for Activities';
+    removeInvalidText(activitiesLegend, 'Register for Activities');
   }
+}
+
+function isPaymentSelected(){
+  const paymentLegend = $('fieldset.payment-info legend');
+  if ($('option[value="select_method"]').selected) {
+    addInvalidText(paymentLegend, 'Please choose a payment method!');
+  } else {
+    removeInvalidText(paymentLegend, 'Payment Info');
+  }
+}
+
+const ccOption = $('option[value="credit card"]');
+//credit card should be between 13 and 16 digits, only numbers
+function validateCreditCard() {
+  const ccInput = $('#cc-num');
+  if (ccOption.selected) {
+    if (isNaN(ccInput.value) || ccInput.value.length < 13 || ccInput.value.length > 16) {
+      highlightInvalidInput(ccInput, 'cc-num', 'Please enter a 13-16 digit card number');
+    } else {
+      removeInvalidHighlighter(ccInput, 'cc-num', 'Card Number:');
+    }
+  }
+}
+
+//5 digits numbers only
+function validateZipCode(){
+  const zipCodeInput = $('#zip');
+  if (ccOption.selected) {
+    if (isNaN(zipCodeInput.value) || zipCodeInput.value.length !== 5) {
+      highlightInvalidInput(zipCodeInput, 'zip', 'Enter a 5 digit zip code');
+    } else {
+      removeInvalidHighlighter(zipCodeInput, 'zip', 'Zip Code:');
+    }
+  }
+}
+
+//three digits numbers only
+function validateCVV(){
+  const cvvInput = $('#cvv');
+  if (ccOption.selected) {
+    if(isNaN(cvvInput.value) || cvvInput.value.length !== 3){
+      highlightInvalidInput(cvvInput, 'cvv', 'Enter a 3 digit cvv');
+    } else {
+      removeInvalidHighlighter(cvvInput, 'cvv', 'CVV:');
+    }
+  } 
 }
 
 function validateForm(e){
   e.preventDefault();
-  checkName();
-  checkActivities();
+  // checkName();
+  // checkActivities();
+  // isPaymentSelected();
+  validateCreditCard();
+  validateZipCode();
+  validateCVV();
 }
 $('form').on('submit', validateForm);
 

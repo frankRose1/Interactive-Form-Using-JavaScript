@@ -144,13 +144,11 @@ label.disabled{
 }
 .invalid-text {
   color: #ff3232;
-  font-weight: bold;
 }
 
-.sm-invalid-text {
-  color: red;
-  font-size: 13px;
-  font-weight: bold;
+label[for="zip"].invalid-text {
+	font-size: 14px;
+	color: #ff3232;
 }
 
 .alert-user p {
