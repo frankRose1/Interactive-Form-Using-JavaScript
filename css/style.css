@@ -139,11 +139,11 @@ label.disabled{
 	color: #D3D3D3;
 }
 
-input.invalid {
+.invalid {
   background-color: #ffdddd;
 }
 .invalid-text {
-  color: red;
+  color: #ff3232;
   font-weight: bold;
 }
 

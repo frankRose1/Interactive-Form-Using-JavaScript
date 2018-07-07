@@ -158,23 +158,60 @@ $('#title').on('change', showOtherField);
   $('select#payment').on('change', showPaymentFields);
 
 //5) form submission validation
-    //name cant be blank
     //email cant be blank and must be a proper email
     //atleast one activity must be selected
     //a payment method must be selected
       //if they choose credit card
         //inputs can only be numbers
+function highlightInvalidInput(input, labelTarget, message){
+  input.focus();
+  const inputLabel = $(`label[for=${labelTarget}]`)
+  input.classList.add('invalid');
+  inputLabel.classList.add('invalid-text')
+  inputLabel.textContent = message;
+}
+
+function removeInvalidHighlighter(input, labelTarget, message){
+  const inputLabel = $(`label[for=${labelTarget}]`);
+  input.classList.remove('invalid');
+  inputLabel.classList.remove('invalid-text');
+  inputLabel.textContent = message;
+}
+
+//name input should only be letters and spaces, and cant be blank
 function checkName(){
-  const nameField = $('input#name');
-  if (nameField.value.length === 0) {
-    nameField.focus();
-    alert('give us your name!');
+  const nameInput = $('input#name');
+  if (nameInput.value.length === 0 || !(/^[a-zA-Z\s]*$/).test(nameInput.value)) {
+    highlightInvalidInput(nameInput, 'name', 'Please enter your name, no numbers or symbols!');
+  } else {
+    removeInvalidHighlighter(nameInput, 'name', 'Name:');
+  }
+}
+
+//have a counter that ticks down each time an activity box is unchecked
+    //if counter hits zero then we know all boxes are unchecked and we must alert user
+function checkActivities(){
+  const activitiesLegend = $('fieldset.activities legend');
+  let cbCounter = activitesCheckboxes.length;
+
+  activitesCheckboxes.forEach(cb => {
+    if(!cb.checked){
+      cbCounter--;
+    }
+  });
+  if (cbCounter === 0) {
+    activitiesLegend.classList.add('invalid-text');
+    activitiesLegend.textContent = 'Please choose atleast one activity!';
+  } else if (cbCounter > 0) {
+    activitiesLegend.classList.remove('invalid-text');
+    activitiesLegend.textContent = 'Register for Activities';
   }
 }
 
 function validateForm(e){
   e.preventDefault();
   checkName();
+  checkActivities();
 }
 $('form').on('submit', validateForm);
 
