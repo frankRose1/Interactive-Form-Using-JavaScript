@@ -1,302 +1,283 @@
-const form = document.querySelector('form');
-const nameInput = document.getElementById('name');
-const jobRole = document.getElementById('title');
-const otherJobField = document.getElementById('other-title');
-//T-SHIRT VARIABLES
-const shirtColors = document.querySelectorAll('#color option');
-const shirtDesign = document.getElementById('design');
-const shirtColorMenu = document.getElementById('color');
-const informUser = createColors('default', 'Select a T-shirt theme');
-const cornFlowerBlue = createColors('cornflowerblue', 'Cornflower Blue');
-const darkSlateGrey = createColors('darkslategrey', 'Dark Slate Grey');
-const gold = createColors('gold', 'Gold');
-const tomato = createColors('tomato', 'Tomato');
-const steelBlue = createColors('steelblue', 'Steel Blue');
-const dimGrey = createColors('dimgrey', 'Dim Grey');
-//ACTIVITIES VARIABLES
-const activitiesFieldSet = document.querySelector('.activities');
-const activitiesCheckbox = document.querySelectorAll('.activities input[type="checkbox"]');
-  //individual checkbox activities
-const jsFrameworks = activitiesCheckbox[1];
-const jsLibs = activitiesCheckbox[2];
-const express = activitiesCheckbox[3];
-const node = activitiesCheckbox[4];
-const buildTools = activitiesCheckbox[5];
-const npm = activitiesCheckbox[6];
-const activitiesLabel = document.querySelector('.activities label');
-const totalCostDiv = document.createElement('div');
-let totalCost = 0;
-//PAYMENT OPTIONS VARIABLES
-const paymentOptions = document.getElementById('payment');
-const creditCardInfo = document.getElementById('credit-card');
-const creditCardOption = document.querySelector('#payment option[value="credit card"]');
-const paypalInfo = document.querySelectorAll('div p')[0];
-const bitCoinInfo = document.querySelectorAll('div p')[1];
-//FORM VALIDATION VARIABLES
-const nameLabel = document.querySelector('label[for="name"]');
-    //email vars
-const emailInput = document.getElementById('mail');
-const emailLabel = document.querySelector('label[for="mail"]');
-const pattern = /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+[,;]?[ ]?)+$/;
-    //activity variables
-const activitiesLegend = document.querySelector('.activities legend');
-    //payment variables
-const submitButton = document.querySelector('button[type="submit"]');
-const ccNumber = document.getElementById('cc-num');
-const ccNumLabel = document.querySelector('label[for="cc-num"]');
-const zipCode = document.getElementById('zip');
-const zipcodeLabel = document.querySelector('label[for="zip"]');
-const cvvNumber = document.getElementById('cvv');
-const cvvLabel = document.querySelector('label[for="cvv"]');
-const selectOption = document.querySelector('option[value="select_method"]');
-const paymentLabel = document.querySelector('label[for="payment"]');
+//////START BLING.JS
+const $ = document.querySelector.bind(document);
+const $$ = document.querySelectorAll.bind(document);
+Node.prototype.on = window.on = function (name, fn) {
+  this.addEventListener(name, fn);
+};
+NodeList.prototype.__proto__ = Array.prototype; // eslint-disable-line
+NodeList.prototype.on = NodeList.prototype.addEventListener = function (name, fn) {
+  this.forEach((elem) => {
+    elem.on(name, fn);
+  });
+};
+//////END BLING.JS
 
-// FUNCTIONS
-//create t-shirt color variables
-function createColors(value, innerText) {
-  const shirtColor = document.createElement('option');
-  shirtColor.value = value;
-  shirtColor.innerText = innerText;
-  return shirtColor;
+$('input#name').focus();
+
+//1)JOB ROLE SECTION --> show/hide 'other' field
+const otherJobInput = $('input#other-title');
+otherJobInput.style.display = 'none';
+
+function showOtherField(e){
+  if (e.target.value === 'other') {
+    otherJobInput.style.display = 'block';
+  } else {
+    otherJobInput.style.display = 'none';
+  }
 }
 
-//append shirt colors
-function appendElement(parent, child1, child2, child3) {
-      parent.appendChild(child1);
-      parent.appendChild(child2);
-      parent.appendChild(child3);
-    }
+$('#title').on('change', showOtherField);
 
-function displayElement(ele1, ele2, ele3, show, hide) {
-  ele1.style.display = show;
-  ele2.style.display = hide;
-  ele3.style.display = hide;
-}
+//2) T-SHIRT SECTION --> hide color opions until selection is made in the design select menu
+  const colorMenu = $('select#color');
+  const chooseOption = `<option value="choosedesign">&larr; Choose a design!</option>`;
+  colorMenu.innerHTML = chooseOption;
 
-function hideElement(ele1, ele2, ele3, display) {
-  ele1.style.display = display;
-  ele2.style.display = display;
-  ele3.style.display = display;
-}
+  function jsPunsOptions(){
+    const punsOptions = `
+      <option value="cornflowerblue">Cornflower Blue</option>
+      <option value="darkslategrey">Dark Slate Grey</option>
+      <option value="gold">Gold</option>
+      `;
+      colorMenu.innerHTML = punsOptions;
+  }
 
-/////////////////
+  function heartJsOptions(){
+    const heartOptions = `
+      <option value="tomato">Tomato</option>
+      <option value="steelblue">Steel Blue</option>
+      <option value="dimgrey">Dim Grey</option>
+    `;
+    colorMenu.innerHTML = heartOptions;
+  }
 
-//add default settings to certain elements
-creditCardOption.selected = 'selected';
-hideElement(paypalInfo, bitCoinInfo, otherJobField, 'none');
-
-// When the page loads, give focus to the first text field
-window.addEventListener('load', () => nameInput.focus( {preventScroll: false} ));
-
-//                                                         JOB ROLE SECTION
-// A text field that will be revealed when the "Other" option is selected from the "Job Role" drop down menu.
-jobRole.addEventListener('change', (e) => {
-    if (e.target.value === "other") {
-     otherJobField.style.display = 'block';
-    } else {
-    otherJobField.style.display = 'none';
-    }
-});
-
-//                                                         T-SHIRT SECTION
-//hide all of the color options to start
-shirtColors.forEach(color => {
-  shirtColorMenu.removeChild(color);
-});
-
-//inform the user to choose a theme
-shirtColorMenu.appendChild(informUser);
-informUser.setAttribute('selected', true);
-
-// If the user selects "Theme - JS Puns" then the color menu should only display "Cornflower Blue," "Dark Slate Grey," and "Gold."
-// If the user selects "Theme - I ♥ JS" then the color menu should only display "Tomato," "Steel Blue," and "Dim Grey."
-shirtDesign.addEventListener('change', (e) => {
-    const shirtColorMenu = document.getElementById('color');
-    const shirtColors = document.querySelectorAll('#color option');
-    //remove the variables again upon each change in user selection
-    shirtColors.forEach(color => {
-      shirtColorMenu.removeChild(color);
-    });
-
-      if (e.target.value === "js puns") {
-      appendElement(shirtColorMenu, cornFlowerBlue, darkSlateGrey, gold);
+  function createShirtOptions(e){
+    if(e.target.value === "js puns"){
+      jsPunsOptions();
     } else if (e.target.value === "heart js") {
-      appendElement(shirtColorMenu, tomato, steelBlue, dimGrey);
+      heartJsOptions();
     } else {
-       shirtColorMenu.appendChild(informUser);
+      colorMenu.innerHTML = chooseOption;
     }
-   }); //end event listener
-
-//                                                         ACTIVITIES SECTION
-activitiesFieldSet.addEventListener('change', (e) => {
-  // use .substr to target the cost at the end of each string inside the otherLabel
-  //accumulate the cost in a variable as the user clicks on various avtivites
- if (e.target.type === 'checkbox') {
-   let accumulatedCost = parseInt(e.target.parentNode.textContent.substr(-3));
-   if (e.target.checked) {
-     totalCost += accumulatedCost;
-   } else {
-     totalCost -= accumulatedCost;
-   }
-   totalCostDiv.textContent = `Your total cost is: $${totalCost}`;
-   activitiesFieldSet.appendChild(totalCostDiv);
- }
-
-  //specific checkboxes must be disabled if their scheduled time conflicts with another activity
-  if (jsFrameworks.checked) {
-    express.disabled = true;
-  } else {
-    express.disabled = false;
-  }
-  if (express.checked) {
-    jsFrameworks.disabled = true;
-  } else {
-    jsFrameworks.disabled = false;
-  }
-  if (jsLibs.checked) {
-    node.disabled = true;
-  } else {
-    node.disabled = false;
-  }
-  if (node.checked) {
-    jsLibs.disabled = true;
-  } else {
-    jsLibs.disabled = false;
   }
 
- //if a checkbox is disabled target the parent node and alter the text color to reflect event conflict
-  activitiesCheckbox.forEach( input => {
-    if (input.disabled === true) {
-     input.parentNode.style.color = "#C0C0C0";
-    } else if (input.disabled === false) {
-      input.parentNode.style.color = "#000";
+  $('select#design').on('change', createShirtOptions);
+
+  //3)ACTIVITIES SECTION --> if conflicting events are selected then the other checkboxes need to be disabled
+  const activitesCheckboxes = $$('.activity-cb');
+  const totalPriceDiv = document.createElement('div');
+  let totalPrice = 0;
+  totalPriceDiv.textContent = `Your total price: $${totalPrice}.00`;
+  $('fieldset.activities').appendChild(totalPriceDiv);
+
+  function activitesHandler() {
+    //frameworks and express conflict
+    if(this.parentElement.textContent.includes('Tuesday 9am-12pm')){
+      activitesCheckboxes.forEach(cb => {
+        if(cb.parentElement.textContent.includes('Tuesday 9am-12pm') && cb !== this && this.checked){
+          cb.disabled = true;
+          cb.parentElement.classList.add('disabled');
+        } else if (cb.parentElement.textContent.includes('Tuesday 9am-12pm') && cb !== this && !this.checked) {
+          cb.disabled = false;
+          cb.parentElement.classList.remove('disabled');
+        }
+      });
+    }
+    //libraries and node  js conflict
+    if(this.parentElement.textContent.includes('Tuesday 1pm-4pm')){
+      activitesCheckboxes.forEach(cb => {
+        if(cb.parentElement.textContent.includes('Tuesday 1pm-4pm') && cb !== this && this.checked){
+          cb.disabled = true;
+          cb.parentElement.classList.add('disabled');
+        } else if(cb.parentElement.textContent.includes('Tuesday 1pm-4pm') && cb !== this && !this.checked) {
+          cb.disabled = false;
+          cb.parentElement.classList.remove('disabled');
+        }
+      });
+    }    
+  }
+
+  //main conferernce is $200 everything else is $100
+  function sumActivities(){
+    //if checked add
+    if (this.name !== 'all' && this.checked) {
+      totalPrice += 100;
+    } else if (this.name === 'all' && this.checked) {
+      totalPrice += 200;
+    }
+    //if unchecked subtract
+    if (this.name !== 'all' && !this.checked) {
+      totalPrice -= 100;
+    } else if (this.name === 'all' && !this.checked) {
+      totalPrice -= 200;
+    }
+
+    if (totalPrice < 0) {
+      totalPrice = 0;
+    }
+    totalPriceDiv.textContent = `Your total price: $${totalPrice}.00`;
+  }
+
+  activitesCheckboxes.on('change', activitesHandler);
+  activitesCheckboxes.on('change', sumActivities);
+
+  //4) PAYMENT SECTION --> show the appropriate div if the related option is selected cc, bitcoin, paypal
+  const creditCardDiv = $('div#credit-card');
+  const paypalDiv = $('div#paypal');
+  const bitcoinDiv = $('div#bitcoin');
+  const alertUserDiv = $('div.alert-user');
+  $('option[value="credit card"]').selected = true;
+
+  function togglePaymentDivs(show, hide1, hide2, hide3){
+    show.style.display = 'block';
+    hide1.style.display = 'none';
+    hide2.style.display = 'none';
+    hide3.style.display = 'none';
+  }
+
+  togglePaymentDivs(creditCardDiv, paypalDiv, bitcoinDiv, alertUserDiv); //show the credit card div by default
+
+  function showPaymentFields(e){
+    if (e.target.value === 'credit card') {
+      togglePaymentDivs(creditCardDiv, paypalDiv, bitcoinDiv, alertUserDiv);
+    } else if (e.target.value === 'bitcoin') {
+      togglePaymentDivs(bitcoinDiv, paypalDiv, creditCardDiv, alertUserDiv);
+    } else if (e.target.value === 'paypal') {
+      togglePaymentDivs(paypalDiv, bitcoinDiv, creditCardDiv, alertUserDiv);
+    } else {
+      togglePaymentDivs(alertUserDiv, bitcoinDiv, creditCardDiv, paypalDiv);
+    }
+  }
+
+  $('select#payment').on('change', showPaymentFields);
+
+//5) FORM VALIDATION
+function addInvalidText(element, message){
+  element.classList.add('invalid-text');
+  element.textContent = message;
+}
+
+function removeInvalidText(element, message){
+  element.classList.remove('invalid-text');
+  element.textContent = message;
+}
+
+function highlightInvalidInput(input, labelTarget, message){
+  input.focus();
+  const inputLabel = $(`label[for=${labelTarget}]`)
+  input.classList.add('invalid');
+  inputLabel.classList.add('invalid-text')
+  inputLabel.textContent = message;
+}
+
+function removeInvalidHighlighter(input, labelTarget, message){
+  const inputLabel = $(`label[for=${labelTarget}]`);
+  input.classList.remove('invalid');
+  inputLabel.classList.remove('invalid-text');
+  inputLabel.textContent = message;
+}
+
+//name input should only be letters and spaces, and cant be blank
+function checkName(e){
+  const nameInput = $('input#name');
+  if (nameInput.value.length === 0 || !(/^[a-zA-Z\s]*$/).test(nameInput.value)) {
+    e.preventDefault();
+    highlightInvalidInput(nameInput, 'name', 'Please enter your name, no numbers or symbols!');
+  } else {
+    removeInvalidHighlighter(nameInput, 'name', 'Name:');
+  }
+}
+
+  //email cant be blank and must be a properly formatted email
+  function checkEmail(e){
+    const emailInput = $('#mail');
+    const emailRegEx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (emailInput.value.length === 0 || !emailRegEx.test(emailInput.value)) {
+      e.preventDefault();
+      highlightInvalidInput(emailInput, 'mail', 'Please enter a valid email address');
+    } else {
+      removeInvalidHighlighter(emailInput, 'mail', 'Email:');
+    }
+  }
+
+//have a counter that ticks down each time an activity box is unchecked
+    //if counter hits zero then we know all boxes are unchecked and we must alert user
+function checkActivities(e){
+  const activitiesLegend = $('fieldset.activities legend');
+  let cbCounter = activitesCheckboxes.length;
+
+  activitesCheckboxes.forEach(cb => {
+    if(!cb.checked){
+      cbCounter--;
     }
   });
-
-});
-
-//                                    PAYMENT INFO SECTION
-// show/hide payment section based on what user selects from the payment options dropdown menu
-paymentOptions.addEventListener('change', (e) => {
-  if (e.target.value === 'paypal' ) {
-    displayElement(paypalInfo, creditCardInfo, bitCoinInfo, 'block', 'none');
-  } else if (e.target.value === 'bitcoin') {
-    displayElement(bitCoinInfo, creditCardInfo, paypalInfo, 'block', 'none');
-  } else if (e.target.value === 'credit card') {
-    displayElement(creditCardInfo, bitCoinInfo, paypalInfo, 'block', 'none');
-  } else {
-    hideElement(paypalInfo, creditCardInfo, bitCoinInfo, 'none');
+  if (cbCounter === 0) {
+    e.preventDefault();
+    addInvalidText(activitiesLegend, 'Please choose atleast one activity!');
+  } else if (cbCounter > 0) {
+    removeInvalidText(activitiesLegend, 'Register for Activities');
   }
-});
-
-//                                   FORM VALIDATION SECTION
-//evaluate the name field, email field, activities checkboxes, and payment info
-function toggleClass(element, action, className){
-    `${element}.classList.${action}('${className}')`;
 }
 
-form.addEventListener('submit', (e) => {
-//NAME VALIDATION
-  if (nameInput.value === '') {
+function isPaymentSelected(e){
+  const paymentLegend = $('fieldset.payment-info legend');
+  if ($('option[value="select_method"]').selected) {
     e.preventDefault();
-    nameInput.focus();
-    nameInput.classList.add('invalid');
-    nameLabel.classList.add('invalid-text');
-    nameLabel.textContent = "Please enter your full name";
+    addInvalidText(paymentLegend, 'Please choose a payment method!');
   } else {
-    nameInput.classList.remove('invalid');
-    nameLabel.classList.remove('invalid-text');
-    nameLabel.textContent = "Name:";
+    removeInvalidText(paymentLegend, 'Payment Info');
   }
+}
 
-//EMAIL VALIDATION
-  let evaluator = true;
-  //tests user input against the reg-expression variable(pattern)
-   if (pattern.test(emailInput.value) === true) {
-      evaluator = true;
-   } else {
-     evaluator = false;
-   }
-
-  if ( emailInput.value === '' || evaluator === false ) {
-    e.preventDefault();
-    emailLabel.focus();
-    emailInput.classList.add('invalid');
-    emailLabel.classList.add('invalid-text');
-    emailLabel.textContent = "Please enter a valid email (e.g. johndoe@gmail.com)";
-  } else {
-      emailInput.classList.remove('invalid');
-      emailLabel.classList.remove('invalid-text');
-      emailLabel.textContent = "Email:";
-  }
-
-//ACTIVITIES VALIDATION
- let activityTracker = activitiesCheckbox.length; // there are 7 activities total
- //loop over the activity checkboxes
- //reduce the activityTracker by 1 for each unchecked input
- //if the tracker hits 0 alert the user to sign up for activity
- activitiesCheckbox.forEach(input => {
-   if (input.checked === false) {
-      activityTracker -= 1;
-   }
- });
-
-  if (activityTracker === 0) {
-    e.preventDefault();
-    activitiesLegend.classList.add('invalid-text');
-    activitiesLegend.textContent = "Please choose at least one activity!";
-  } else {
-    activitiesLegend.classList.remove('invalid-text');
-    activitiesLegend.textContent = "Register for Activities";
-  }
-
-//PAYMENT VALIDATION
-//alert user if no payment method was selected
-  if(selectOption.selected) {
-    e.preventDefault();
-    paymentLabel.classList.add('invalid-text');
-    paymentLabel.textContent = "Please choose a payment method!";
-  } else {
-    paymentLabel.classList.remove('invalid-text');
-    paymentLabel.textContent = "I'm going to pay with:";
-  }
-//CC VALIDATION
-  if (creditCardOption.selected) {
-    //check to make sure credit card field isn't blank, is proper length, and is only numbers
-    if(ccNumber.value === '' || isNaN(ccNumber.value) === true || ccNumber.value.length > 16 || ccNumber.value.length < 13) {
+const ccOption = $('option[value="credit card"]');
+//between 13 and 16 digits numbers only
+function validateCreditCard(e) {
+  const ccInput = $('#cc-num');
+  if (ccOption.selected) {
+    if (isNaN(ccInput.value) || ccInput.value.length < 13 || ccInput.value.length > 16) {
       e.preventDefault();
-        ccNumber.focus();
-        ccNumber.classList.add('invalid');
-        ccNumLabel.classList.add('invalid-text');
-        ccNumLabel.innerText = 'Please enter a 13-16 digit card number';
+      highlightInvalidInput(ccInput, 'cc-num', 'Please enter a 13-16 digit card number');
     } else {
-      ccNumber.classList.remove('invalid');
-      ccNumLabel.classList.remove('invalid-text');
-      ccNumLabel.innerText = 'Card Number:';
-    }//end of ccnumber validation
-     //check to make sure zip code is not left blank, is 5 digits, and is only numbers
-     if(zipCode.value === '' || isNaN(zipCode.value) === true || zipCode.value.length !== 5) {
-         e.preventDefault();
-         zipCode.focus();
-         zipCode.classList.add('invalid');
-         zipcodeLabel.classList.add('sm-invalid-text');
-         zipcodeLabel.innerText = 'Enter a 5 digit zip code';
-     } else {
-       zipCode.classList.remove('invalid');
-       zipcodeLabel.classList.remove('sm-invalid-text');
-       zipcodeLabel.innerText = 'Zip Code:';
-     }//end of zip validation
-    //check to make sure cvv is not left blank, is 3 digits, and is only numbers
-     if(cvvNumber.value === '' || isNaN(cvvNumber.value) === true || cvvNumber.value.length !== 3) {
-         e.preventDefault();
-         cvvNumber.focus();
-         cvvNumber.classList.add('invalid');
-         cvvLabel.classList.add('invalid-text');
-         cvvLabel.innerText = 'Enter a 3 digit cvv';
-     } else {
-       cvvNumber.classList.remove('invalid');
-       cvvLabel.classList.remove('invalid-text');
-       cvvLabel.innerText = 'CVV:';
-     }//end of cvv validation
-  } //end of "if credit card was selected"
-});
+      removeInvalidHighlighter(ccInput, 'cc-num', 'Card Number:');
+    }
+  }
+}
+
+//five digits numbers only
+function validateZipCode(e){
+  const zipCodeInput = $('#zip');
+  if (ccOption.selected) {
+    if (isNaN(zipCodeInput.value) || zipCodeInput.value.length !== 5) {
+      e.preventDefault();
+      highlightInvalidInput(zipCodeInput, 'zip', 'Enter a 5 digit zip code');
+    } else {
+      removeInvalidHighlighter(zipCodeInput, 'zip', 'Zip Code:');
+    }
+  }
+}
+
+//three digits numbers only
+function validateCVV(e){
+  const cvvInput = $('#cvv');
+  if (ccOption.selected) {
+    if(isNaN(cvvInput.value) || cvvInput.value.length !== 3){
+      e.preventDefault();
+      highlightInvalidInput(cvvInput, 'cvv', 'Enter a 3 digit cvv');
+    } else {
+      removeInvalidHighlighter(cvvInput, 'cvv', 'CVV:');
+    }
+  } 
+}
+
+function validateForm(e){
+  checkName(e);
+  checkEmail(e);
+  checkActivities(e);
+  isPaymentSelected(e);
+  validateCreditCard(e);
+  validateZipCode(e);
+  validateCVV(e);
+}
+
+$('form').on('submit', validateForm);
+
