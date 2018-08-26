@@ -67,7 +67,7 @@ $('#title').on('change', showOtherField);
   const activitesCheckboxes = $$('.activity-cb');
   const totalPriceDiv = document.createElement('div');
   let totalPrice = 0;
-  totalPriceDiv.textContent = `Your total price: $${totalPrice}.00`;
+  totalPriceDiv.innerHTML = `Your total price: <span class="money-green">$${totalPrice}.00</span>`;
   $('fieldset.activities').appendChild(totalPriceDiv);
 
   function activitesHandler() {
@@ -115,7 +115,7 @@ $('#title').on('change', showOtherField);
     if (totalPrice < 0) {
       totalPrice = 0;
     }
-    totalPriceDiv.textContent = `Your total price: $${totalPrice}.00`;
+    totalPriceDiv.innerHTML = `Your total price: <span class="money-green">$${totalPrice}.00</span>`;
   }
 
   activitesCheckboxes.on('change', activitesHandler);
@@ -180,7 +180,7 @@ function removeInvalidHighlighter(input, labelTarget, message){
 //name input should only be letters and spaces, and cant be blank
 function checkName(e){
   const nameInput = $('input#name');
-  if (nameInput.value.length === 0 || !(/^[a-zA-Z\s]*$/).test(nameInput.value)) {
+  if (nameInput.value.trim().length === 0 || !(/^[a-zA-Z\s]*$/).test(nameInput.value)) {
     e.preventDefault();
     highlightInvalidInput(nameInput, 'name', 'Please enter your name, no numbers or symbols!');
   } else {
@@ -192,7 +192,7 @@ function checkName(e){
   function checkEmail(e){
     const emailInput = $('#mail');
     const emailRegEx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (emailInput.value.length === 0 || !emailRegEx.test(emailInput.value)) {
+    if (emailInput.value.trim().length === 0 || !emailRegEx.test(emailInput.value)) {
       e.preventDefault();
       highlightInvalidInput(emailInput, 'mail', 'Please enter a valid email address');
     } else {
@@ -234,7 +234,7 @@ const ccOption = $('option[value="credit card"]');
 function validateCreditCard(e) {
   const ccInput = $('#cc-num');
   if (ccOption.selected) {
-    if (isNaN(ccInput.value) || ccInput.value.length < 13 || ccInput.value.length > 16) {
+    if (isNaN(ccInput.value) || ccInput.value.trim().length < 13 || ccInput.value.trim().length > 16) {
       e.preventDefault();
       highlightInvalidInput(ccInput, 'cc-num', 'Please enter a 13-16 digit card number');
     } else {
@@ -247,7 +247,7 @@ function validateCreditCard(e) {
 function validateZipCode(e){
   const zipCodeInput = $('#zip');
   if (ccOption.selected) {
-    if (isNaN(zipCodeInput.value) || zipCodeInput.value.length !== 5) {
+    if (isNaN(zipCodeInput.value) || zipCodeInput.value.trim().length !== 5) {
       e.preventDefault();
       highlightInvalidInput(zipCodeInput, 'zip', 'Enter a 5 digit zip code');
     } else {
@@ -260,7 +260,7 @@ function validateZipCode(e){
 function validateCVV(e){
   const cvvInput = $('#cvv');
   if (ccOption.selected) {
-    if(isNaN(cvvInput.value) || cvvInput.value.length !== 3){
+    if(isNaN(cvvInput.value) || cvvInput.value.trim().length !== 3){
       e.preventDefault();
       highlightInvalidInput(cvvInput, 'cvv', 'Enter a 3 digit cvv');
     } else {

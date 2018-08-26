@@ -140,7 +140,8 @@ label.disabled{
 }
 
 .invalid {
-  background-color: #ffdddd;
+	background-color: #ffdddd;
+	border: 1px solid red;
 }
 .invalid-text {
   color: #ff3232;
@@ -154,6 +155,11 @@ label[for="zip"].invalid-text {
 .alert-user p {
 	font-size: 1.3em;
 	color: #ff3232;
+}
+
+.money-green{
+	color: #5f9341;
+	font-weight: bold;
 }
 
 /* =================================
