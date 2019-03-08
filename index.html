@@ -15,16 +15,22 @@
       <h1>Full Stack Conf</h1>
     </header>
 
-    <form action="index.html" method="post" >
+    <form action="index.html" method="post">
 
       <fieldset>
         <legend>Basic Info</legend>
 
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="user_name">
-
-        <label for="mail">Email:</label>
-        <input type="email" id="mail" name="user_email">
+        <div class="input-container">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="user_name">
+          <span class="tooltip">Must contain letters only</span>
+        </div>
+        
+        <div class="input-container">
+          <label for="mail">Email:</label>
+          <input type="text" id="mail" name="user_email">
+          <span class="tooltip">Must be a valid email address</span>
+        </div>
 
         <label for="title">Job Role</label>
         <select id="title" name="user_title">
@@ -100,17 +106,20 @@
 
           <div class="col-6 col">
             <label for="cc-num">Card Number:</label>
-        	  <input id="cc-num" name="user_cc-num" type="text">
+            <input id="cc-num" name="user_cc-num" type="text">
+            <span class="tooltip">CC number must be between 13 and 16 digits</span>
           </div>
 
           <div class="col-3 col">
             <label for="zip">Zip Code:</label>
             <input id="zip" name="user_zip" type="text">
+            <span class="tooltip">Must be a 5 digit zip code</span>
           </div>
 
           <div class="col-3 col">
             <label for="cvv">CVV:</label>
             <input id="cvv" name="user_cvv" type="text">
+            <span class="tooltip">Must be a 3 digit CVV</span>
           </div>
 
           <label for="exp-month">Expiration Date:</label>
